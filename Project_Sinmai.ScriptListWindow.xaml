@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="Project_Sinmai.ScriptListWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:w="clr-namespace:Project_Sinmai" Height="540" Width="920" WindowStartupLocation="CenterOwner" Title="{w:Tr jobs.title}">
+  <Grid Margin="12">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Rectangle Grid.RowSpan="3" Margin="-12" Panel.ZIndex="999" Fill="{StaticResource WatermarkBrush}" IsHitTestVisible="False" />
+    <TextBlock Grid.Row="0" FontSize="11" Foreground="#FF808080" TextWrapping="Wrap" Margin="0,0,0,8" Text="{w:Tr jobs.hint}" />
+    <DataGrid Name="DgTasks" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False" MouseDoubleClick="DgTasks_MouseDoubleClick">
+      <DataGrid.Columns>
+        <DataGridTextColumn Width="60" Header="{w:Tr jobs.colId}" Binding="{Binding Id}" />
+        <DataGridTextColumn Width="80" Header="{w:Tr jobs.colGame}" Binding="{Binding Game}" />
+        <DataGridTextColumn Width="100" Header="{w:Tr jobs.colVersion}" Binding="{Binding Version}" />
+        <DataGridTextColumn Width="90" Header="{w:Tr jobs.colInterval}" Binding="{Binding IntervalText}" />
+        <DataGridTextColumn Width="90" Header="{w:Tr jobs.colStatus}" Binding="{Binding StatusText}" />
+        <DataGridTextColumn Width="140" Header="{w:Tr jobs.colNext}" Binding="{Binding NextRunText}" />
+        <DataGridTextColumn Width="80" Header="{w:Tr jobs.colNotify}" Binding="{Binding NotifyText}" />
+        <DataGridTextColumn Width="*" Header="{w:Tr jobs.colPath}" Binding="{Binding DownloadPath}" />
+      </DataGrid.Columns>
+    </DataGrid>
+    <DockPanel Grid.Row="2" Margin="0,10,0,0" LastChildFill="False">
+      <Button DockPanel.Dock="Left" Width="90" Height="28" Content="{w:Tr jobs.new}" Click="BtnNew_Click" />
+      <Button DockPanel.Dock="Left" Width="90" Height="28" Margin="10,0,0,0" Content="{w:Tr jobs.edit}" Click="BtnEdit_Click" />
+      <Button DockPanel.Dock="Left" Width="90" Height="28" Margin="10,0,0,0" Content="{w:Tr jobs.delete}" Click="BtnDelete_Click" />
+      <Button DockPanel.Dock="Left" Width="120" Height="28" Margin="10,0,0,0" Content="{w:Tr jobs.open}" Click="BtnOpen_Click" />
+      <Button DockPanel.Dock="Right" Width="90" Height="28" Content="{w:Tr jobs.close}" Click="BtnClose_Click" />
+    </DockPanel>
+  </Grid>
+</Window>

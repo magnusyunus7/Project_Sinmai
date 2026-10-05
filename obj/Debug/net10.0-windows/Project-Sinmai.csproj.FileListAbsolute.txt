@@ -1,0 +1,13 @@
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project-Sinmai.csproj.AssemblyReference.cache
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project_Sinmai.App.g.cs
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project_Sinmai.FileDecryptWindow.g.cs
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project_Sinmai.IcfEditWindow.g.cs
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project_Sinmai.MainWindow.g.cs
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project_Sinmai.ManualKeyWindow.g.cs
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project_Sinmai.ScriptEditWindow.g.cs
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project_Sinmai.ScriptListWindow.g.cs
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project_Sinmai.ScriptLogWindow.g.cs
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project_Sinmai.ToastWindow.g.cs
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project-Sinmai_MarkupCompile.cache
+C:\Users\Asus\Desktop\My code\Project-Sinmai\obj\Debug\net10.0-windows\Project-Sinmai_MarkupCompile.lref

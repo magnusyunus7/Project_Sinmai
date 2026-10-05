@@ -1,0 +1,91 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <AssemblyName>Project-Sinmai</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>True</UseWPF>
+    <TargetFramework>net10.0</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="WindowsBase">
+      <HintPath>WindowsBase.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Process">
+      <HintPath>System.Diagnostics.Process.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections">
+      <HintPath>System.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography">
+      <HintPath>System.Security.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="DiscUtils.Core">
+      <HintPath>DiscUtils.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DiscUtils.Ntfs">
+      <HintPath>DiscUtils.Ntfs.dll</HintPath>
+    </Reference>
+    <Reference Include="DiscUtils.ExFat">
+      <HintPath>DiscUtils.ExFat.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.RegularExpressions">
+      <HintPath>System.Text.RegularExpressions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <HintPath>System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <HintPath>PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ObjectModel">
+      <HintPath>System.ObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel">
+      <HintPath>System.ComponentModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading">
+      <HintPath>System.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json">
+      <HintPath>System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression">
+      <HintPath>System.IO.Compression.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="DiscUtils.Streams">
+      <HintPath>DiscUtils.Streams.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq">
+      <HintPath>System.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Primitives">
+      <HintPath>System.Net.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.TypeConverter">
+      <HintPath>System.ComponentModel.TypeConverter.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web">
+      <HintPath>System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Extensions">
+      <HintPath>System.Windows.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.HttpUtility">
+      <HintPath>System.Web.HttpUtility.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Specialized">
+      <HintPath>System.Collections.Specialized.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

@@ -37,6 +37,7 @@ SEGMENT_SIZE = 2 * 1024 * 1024
 MAX_SEGMENTS = 4
 MAX_RETRIES = 3
 PROGRESS_WIDTH = 30
+REQUEST_TIMEOUT = (10, 2)
 
 
 @dataclass(frozen=True)
@@ -44,6 +45,10 @@ class OptionEntry:
     name: str
     url: str
     latest: bool
+
+
+class DownloadCancelled(Exception):
+    """Raised when the user requests cancellation."""
 
 
 class DownloadProgress:
@@ -186,15 +191,20 @@ def download_segment(
     start: int,
     end: int,
     progress: DownloadProgress,
+    cancel: threading.Event,
 ) -> None:
     written = 0
     for attempt in range(1, MAX_RETRIES + 1):
+        if cancel.is_set():
+            raise DownloadCancelled
         try:
             headers = {
                 "User-Agent": DOWNLOAD_USER_AGENT,
                 "Range": f"bytes={start + written}-{end}",
             }
-            with session.get(url, headers=headers, stream=True, timeout=30) as response:
+            with session.get(
+                url, headers=headers, stream=True, timeout=REQUEST_TIMEOUT
+            ) as response:
                 if response.status_code != 206:
                     raise RuntimeError(
                         f"range request returned HTTP {response.status_code}, expected 206"
@@ -202,6 +212,8 @@ def download_segment(
                 with output.open("r+b") as file:
                     file.seek(start + written)
                     for chunk in response.iter_content(chunk_size=81920):
+                        if cancel.is_set():
+                            raise DownloadCancelled
                         if not chunk:
                             continue
                         remaining = end - start + 1 - written
@@ -213,17 +225,25 @@ def download_segment(
                             break
             if written == end - start + 1:
                 return
+        except DownloadCancelled:
+            raise
         except (OSError, requests.RequestException, RuntimeError):
             if attempt < MAX_RETRIES:
-                time.sleep(2)
+                if cancel.wait(2):
+                    raise DownloadCancelled
     raise RuntimeError(f"segment {start}-{end} failed after {MAX_RETRIES} attempts")
 
 
-def download_segmented(session: requests.Session, url: str, output: Path) -> bool:
+def download_segmented(
+    session: requests.Session,
+    url: str,
+    output: Path,
+    cancel: threading.Event,
+) -> bool:
     response = session.head(
         url,
         headers={"User-Agent": DOWNLOAD_USER_AGENT},
-        timeout=30,
+        timeout=REQUEST_TIMEOUT,
     )
     response.raise_for_status()
     total_bytes = int(response.headers.get("Content-Length", "0"))
@@ -246,37 +266,66 @@ def download_segmented(session: requests.Session, url: str, output: Path) -> boo
 
     progress = DownloadProgress(total_bytes)
     try:
-        with ThreadPoolExecutor(max_workers=segment_count) as executor:
-            futures = [
-                executor.submit(
-                    download_segment,
-                    session,
-                    url,
-                    output,
-                    start,
-                    end,
-                    progress,
-                )
-                for start, end in segments
-            ]
+        executor = ThreadPoolExecutor(max_workers=segment_count)
+        futures = [
+            executor.submit(
+                download_segment,
+                session,
+                url,
+                output,
+                start,
+                end,
+                progress,
+                cancel,
+            )
+            for start, end in segments
+        ]
+        try:
             for future in futures:
                 future.result()
+        except KeyboardInterrupt as exc:
+            cancel.set()
+            executor.shutdown(wait=False, cancel_futures=True)
+            raise DownloadCancelled from exc
+        except DownloadCancelled:
+            cancel.set()
+            executor.shutdown(wait=False, cancel_futures=True)
+            raise
+        except BaseException:
+            cancel.set()
+            executor.shutdown(wait=False, cancel_futures=True)
+            raise
+        else:
+            executor.shutdown(wait=True)
         progress.finish()
         return True
+    except DownloadCancelled:
+        cancel.set()
+        raise
     except (OSError, requests.RequestException, RuntimeError):
+        cancel.set()
         progress.finish()
         output.unlink(missing_ok=True)
         return False
 
 
-def download_with_retry(session: requests.Session, url: str, output: Path) -> bool:
+def download_with_retry(
+    session: requests.Session,
+    url: str,
+    output: Path,
+    cancel: threading.Event,
+) -> bool:
     for attempt in range(1, MAX_RETRIES + 1):
+        if cancel.is_set():
+            raise DownloadCancelled
         try:
             already_downloaded = output.stat().st_size if output.exists() else 0
             headers = {"User-Agent": DOWNLOAD_USER_AGENT}
             if already_downloaded:
                 headers["Range"] = f"bytes={already_downloaded}-"
-            with session.get(url, headers=headers, stream=True, timeout=30) as response:
+            with session.get(
+                url, headers=headers, stream=True, timeout=REQUEST_TIMEOUT
+            ) as response:
                 if response.status_code == 416:
                     return True
                 response.raise_for_status()
@@ -287,23 +336,36 @@ def download_with_retry(session: requests.Session, url: str, output: Path) -> bo
                 output.parent.mkdir(parents=True, exist_ok=True)
                 with output.open("ab") as file:
                     for chunk in response.iter_content(chunk_size=81920):
+                        if cancel.is_set():
+                            raise DownloadCancelled
                         if chunk:
                             file.write(chunk)
                             progress.update(len(chunk))
                 progress.finish()
             return True
+        except DownloadCancelled:
+            raise
         except (OSError, requests.RequestException):
             if attempt < MAX_RETRIES:
-                time.sleep(2)
+                if cancel.wait(2):
+                    raise DownloadCancelled
     return False
 
 
 def download_file(session: requests.Session, url: str, output: Path) -> None:
-    if download_segmented(session, url, output):
-        return
-    output.unlink(missing_ok=True)
-    if not download_with_retry(session, url, output):
-        raise RuntimeError(f"download failed: {url}")
+    cancel = threading.Event()
+    try:
+        if download_segmented(session, url, output, cancel):
+            return
+        output.unlink(missing_ok=True)
+        if not download_with_retry(session, url, output, cancel):
+            raise RuntimeError(f"download failed: {url}")
+    except (DownloadCancelled, KeyboardInterrupt) as exc:
+        cancel.set()
+        output.unlink(missing_ok=True)
+        if isinstance(exc, KeyboardInterrupt):
+            raise DownloadCancelled from exc
+        raise
 
 
 def download_entries(
@@ -447,6 +509,12 @@ def main() -> int:
                     for name in requested
                 )
                 download_entries(session, all_entries, indexes, args.download_dir)
+    except DownloadCancelled:
+        print("\nDownload cancelled.", file=sys.stderr)
+        return 130
+    except KeyboardInterrupt:
+        print("\nOperation cancelled.", file=sys.stderr)
+        return 130
     except (requests.RequestException, RuntimeError, ValueError) as exc:
         print(f"Unable to list options: {exc}", file=sys.stderr)
         return 1

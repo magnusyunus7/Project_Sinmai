@@ -16,6 +16,7 @@ import base64
 from concurrent.futures import ThreadPoolExecutor
 import re
 import sys
+import threading
 import time
 import zlib
 from dataclasses import dataclass
@@ -35,6 +36,7 @@ DOWNLOAD_USER_AGENT = CLIENT_ID
 SEGMENT_SIZE = 2 * 1024 * 1024
 MAX_SEGMENTS = 4
 MAX_RETRIES = 3
+PROGRESS_WIDTH = 30
 
 
 @dataclass(frozen=True)
@@ -42,6 +44,49 @@ class OptionEntry:
     name: str
     url: str
     latest: bool
+
+
+class DownloadProgress:
+    def __init__(self, total_bytes: int) -> None:
+        self.total_bytes = total_bytes
+        self.downloaded = 0
+        self.started = time.monotonic()
+        self.last_update = 0.0
+        self.lock = threading.Lock()
+
+    def update(self, amount: int, *, force: bool = False) -> None:
+        with self.lock:
+            self.downloaded += amount
+            now = time.monotonic()
+            if not force and now - self.last_update < 0.2:
+                return
+            self.last_update = now
+            elapsed = max(now - self.started, 0.001)
+            speed = self.downloaded / elapsed
+            fraction = min(self.downloaded / self.total_bytes, 1.0)
+            filled = int(PROGRESS_WIDTH * fraction)
+            bar = "#" * filled + "-" * (PROGRESS_WIDTH - filled)
+            percent = fraction * 100
+            sys.stdout.write(
+                f"\r[{bar}] {percent:6.2f}% "
+                f"{format_bytes(speed)}/s "
+                f"({format_bytes(self.downloaded)}/{format_bytes(self.total_bytes)})"
+            )
+            sys.stdout.flush()
+
+    def finish(self) -> None:
+        self.update(0, force=True)
+        sys.stdout.write("\n")
+        sys.stdout.flush()
+
+
+def format_bytes(value: float) -> str:
+    units = ("B", "KiB", "MiB", "GiB", "TiB")
+    for unit in units:
+        if value < 1024 or unit == units[-1]:
+            return f"{value:.1f} {unit}"
+        value /= 1024
+    return f"{value:.1f} TiB"
 
 
 def build_request() -> bytes:
@@ -140,6 +185,7 @@ def download_segment(
     output: Path,
     start: int,
     end: int,
+    progress: DownloadProgress,
 ) -> None:
     written = 0
     for attempt in range(1, MAX_RETRIES + 1):
@@ -162,6 +208,7 @@ def download_segment(
                         chunk = chunk[:remaining]
                         file.write(chunk)
                         written += len(chunk)
+                        progress.update(len(chunk))
                         if written >= end - start + 1:
                             break
             if written == end - start + 1:
@@ -197,16 +244,27 @@ def download_segmented(session: requests.Session, url: str, output: Path) -> boo
     with output.open("wb") as file:
         file.truncate(total_bytes)
 
+    progress = DownloadProgress(total_bytes)
     try:
         with ThreadPoolExecutor(max_workers=segment_count) as executor:
             futures = [
-                executor.submit(download_segment, session, url, output, start, end)
+                executor.submit(
+                    download_segment,
+                    session,
+                    url,
+                    output,
+                    start,
+                    end,
+                    progress,
+                )
                 for start, end in segments
             ]
             for future in futures:
                 future.result()
+        progress.finish()
         return True
     except (OSError, requests.RequestException, RuntimeError):
+        progress.finish()
         output.unlink(missing_ok=True)
         return False
 
@@ -222,11 +280,17 @@ def download_with_retry(session: requests.Session, url: str, output: Path) -> bo
                 if response.status_code == 416:
                     return True
                 response.raise_for_status()
+                total_bytes = already_downloaded + int(
+                    response.headers.get("Content-Length", "0")
+                )
+                progress = DownloadProgress(total_bytes)
                 output.parent.mkdir(parents=True, exist_ok=True)
                 with output.open("ab") as file:
                     for chunk in response.iter_content(chunk_size=81920):
                         if chunk:
                             file.write(chunk)
+                            progress.update(len(chunk))
+                progress.finish()
             return True
         except (OSError, requests.RequestException):
             if attempt < MAX_RETRIES:

@@ -5,6 +5,7 @@ import base64
 from concurrent.futures import ThreadPoolExecutor
 import os
 import re
+import subprocess
 import sys
 import threading
 import time
@@ -57,6 +58,7 @@ TITLE_VERSION = _required_setting("TITLE_VERSION", _ENV_VALUES)
 CLIENT_ID = _required_setting("CLIENT_ID", _ENV_VALUES)
 DOWNLOAD_USER_AGENT = CLIENT_ID
 DOWNLOAD_DIR = Path("downloads")
+DECRYPTOR_PATH = Path(__file__).resolve().parent.parent / "unsegareborn.exe"
 SEGMENT_SIZE = 2 * 1024 * 1024
 MAX_SEGMENTS = 4
 MAX_RETRIES = 3
@@ -396,16 +398,42 @@ def download_entries(
     entries: list[OptionEntry],
     indexes: Iterable[int],
     download_dir: Path,
+    auto_decrypt: bool,
 ) -> None:
     for index in indexes:
         entry = entries[index]
         destination = download_dir / entry.name
         if destination.exists():
             print(f"Already downloaded {entry.name} -> {destination}")
-            continue
-        print(f"Downloading {entry.name} -> {destination}")
-        download_file(session, entry.url, destination)
-        print(f"Downloaded {entry.name}")
+        else:
+            print(f"Downloading {entry.name} -> {destination}")
+            download_file(session, entry.url, destination)
+            print(f"Downloaded {entry.name}")
+        if auto_decrypt and destination.suffix.lower() == ".opt":
+            decrypt_option(destination, download_dir)
+
+
+def decrypt_option(path: Path, output_dir: Path) -> None:
+    if not DECRYPTOR_PATH.is_file():
+        raise RuntimeError(f"Decryptor executable not found: {DECRYPTOR_PATH}")
+    print(f"Auto-decrypting {path.name}")
+    try:
+        subprocess.run(
+            [
+                str(DECRYPTOR_PATH),
+                "-o",
+                str(output_dir.resolve()),
+                str(path.resolve()),
+            ],
+            cwd=DECRYPTOR_PATH.parent,
+            check=True,
+        )
+    except OSError as exc:
+        raise RuntimeError(f"Unable to start decryptor: {exc}") from exc
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError(
+            f"Decryptor failed for {path.name} with exit code {exc.returncode}"
+        ) from exc
 
 
 def read_selection(text: str, entry_count: int) -> list[int]:
@@ -424,6 +452,20 @@ def read_selection(text: str, entry_count: int) -> list[int]:
     if not indexes:
         raise ValueError("Choose at least one file.")
     return sorted(indexes)
+
+
+def read_yes_no(prompt: str) -> bool:
+    while True:
+        try:
+            answer = input(prompt).strip().lower()
+        except (EOFError, KeyboardInterrupt) as exc:
+            print()
+            raise DownloadCancelled from exc
+        if answer in {"y", "yes"}:
+            return True
+        if answer in {"n", "no"}:
+            return False
+        print("Please answer yes or no.")
 
 
 def interactive_download(
@@ -448,7 +490,10 @@ def interactive_download(
         if choice in {"3", "back", "exit", "b", "q"}:
             return
         if choice in {"2", "all", "a"}:
-            download_entries(session, entries, range(len(entries)), download_dir)
+            auto_decrypt = read_yes_no("Auto-decrypt downloaded options? [yes/no]: ")
+            download_entries(
+                session, entries, range(len(entries)), download_dir, auto_decrypt
+            )
             return
         if choice in {"1", "selected", "s"}:
             while True:
@@ -463,7 +508,8 @@ def interactive_download(
                     return
                 except ValueError as exc:
                     print(exc)
-            download_entries(session, entries, indexes, download_dir)
+            auto_decrypt = read_yes_no("Auto-decrypt downloaded options? [yes/no]: ")
+            download_entries(session, entries, indexes, download_dir, auto_decrypt)
             return
         print("Please choose 1, 2, or 3.")
 

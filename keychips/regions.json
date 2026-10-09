@@ -1,0 +1,530 @@
+[
+    {
+        "regionId": 1,
+        "regionName": "日本-愛知県"
+    },
+    {
+        "regionId": 2,
+        "regionName": "日本-青森県"
+    },
+    {
+        "regionId": 3,
+        "regionName": "日本-秋田県"
+    },
+    {
+        "regionId": 4,
+        "regionName": "日本-石川県"
+    },
+    {
+        "regionId": 5,
+        "regionName": "日本-茨城県"
+    },
+    {
+        "regionId": 6,
+        "regionName": "日本-岩手県"
+    },
+    {
+        "regionId": 7,
+        "regionName": "日本-愛媛県"
+    },
+    {
+        "regionId": 8,
+        "regionName": "日本-大分県"
+    },
+    {
+        "regionId": 9,
+        "regionName": "日本-大阪府"
+    },
+    {
+        "regionId": 10,
+        "regionName": "日本-岡山県"
+    },
+    {
+        "regionId": 11,
+        "regionName": "日本-沖縄県"
+    },
+    {
+        "regionId": 12,
+        "regionName": "日本-香川県"
+    },
+    {
+        "regionId": 13,
+        "regionName": "日本-鹿児島県"
+    },
+    {
+        "regionId": 14,
+        "regionName": "日本-神奈川県"
+    },
+    {
+        "regionId": 15,
+        "regionName": "日本-岐阜県"
+    },
+    {
+        "regionId": 16,
+        "regionName": "日本-京都府"
+    },
+    {
+        "regionId": 17,
+        "regionName": "日本-熊本県"
+    },
+    {
+        "regionId": 18,
+        "regionName": "日本-群馬県"
+    },
+    {
+        "regionId": 19,
+        "regionName": "日本-高知県"
+    },
+    {
+        "regionId": 20,
+        "regionName": "日本-埼玉県"
+    },
+    {
+        "regionId": 21,
+        "regionName": "日本-佐賀県"
+    },
+    {
+        "regionId": 22,
+        "regionName": "日本-滋賀県"
+    },
+    {
+        "regionId": 23,
+        "regionName": "日本-静岡県"
+    },
+    {
+        "regionId": 25,
+        "regionName": "日本-千葉県"
+    },
+    {
+        "regionId": 26,
+        "regionName": "日本-東京都"
+    },
+    {
+        "regionId": 27,
+        "regionName": "日本-徳島県"
+    },
+    {
+        "regionId": 28,
+        "regionName": "日本-栃木県"
+    },
+    {
+        "regionId": 30,
+        "regionName": "日本-富山県"
+    },
+    {
+        "regionId": 31,
+        "regionName": "日本-長崎県"
+    },
+    {
+        "regionId": 32,
+        "regionName": "日本-長野県"
+    },
+    {
+        "regionId": 33,
+        "regionName": "日本-奈良県"
+    },
+    {
+        "regionId": 34,
+        "regionName": "日本-新潟県"
+    },
+    {
+        "regionId": 35,
+        "regionName": "日本-兵庫県"
+    },
+    {
+        "regionId": 36,
+        "regionName": "日本-広島県"
+    },
+    {
+        "regionId": 37,
+        "regionName": "日本-福井県"
+    },
+    {
+        "regionId": 38,
+        "regionName": "日本-福岡県"
+    },
+    {
+        "regionId": 39,
+        "regionName": "日本-福島県"
+    },
+    {
+        "regionId": 40,
+        "regionName": "日本-北海道"
+    },
+    {
+        "regionId": 41,
+        "regionName": "日本-三重県"
+    },
+    {
+        "regionId": 42,
+        "regionName": "日本-宮城県"
+    },
+    {
+        "regionId": 43,
+        "regionName": "日本-宮崎県"
+    },
+    {
+        "regionId": 44,
+        "regionName": "日本-山形県"
+    },
+    {
+        "regionId": 45,
+        "regionName": "日本-山口県"
+    },
+    {
+        "regionId": 46,
+        "regionName": "日本-山梨県"
+    },
+    {
+        "regionId": 47,
+        "regionName": "日本-和歌山県"
+    },
+    {
+        "regionId": 102,
+        "regionName": "香港-Kwai+Tsing"
+    },
+    {
+        "regionId": 105,
+        "regionName": "香港-Sha+Tin"
+    },
+    {
+        "regionId": 106,
+        "regionName": "香港-Tai+Po"
+    },
+    {
+        "regionId": 107,
+        "regionName": "香港-Tsuen+Wan"
+    },
+    {
+        "regionId": 108,
+        "regionName": "香港-Tuen+Mun"
+    },
+    {
+        "regionId": 109,
+        "regionName": "香港-Yuen+Long"
+    },
+    {
+        "regionId": 111,
+        "regionName": "香港-Kwun+Tong"
+    },
+    {
+        "regionId": 112,
+        "regionName": "香港-Sham+Shui+Po"
+    },
+    {
+        "regionId": 113,
+        "regionName": "香港-Wong+Tai+Sin"
+    },
+    {
+        "regionId": 114,
+        "regionName": "香港-Yau+Tsim+Mong"
+    },
+    {
+        "regionId": 115,
+        "regionName": "香港-Central+and+Western"
+    },
+    {
+        "regionId": 116,
+        "regionName": "香港-Eastern"
+    },
+    {
+        "regionId": 117,
+        "regionName": "香港-Southern"
+    },
+    {
+        "regionId": 118,
+        "regionName": "香港-Wan+Chai"
+    },
+    {
+        "regionId": 201,
+        "regionName": "新加坡-Central+Singapore"
+    },
+    {
+        "regionId": 202,
+        "regionName": "新加坡-North+East"
+    },
+    {
+        "regionId": 203,
+        "regionName": "新加坡-North+West"
+    },
+    {
+        "regionId": 204,
+        "regionName": "新加坡-South+East"
+    },
+    {
+        "regionId": 205,
+        "regionName": "新加坡-South+West"
+    },
+    {
+        "regionId": 301,
+        "regionName": "台灣-Keelung"
+    },
+    {
+        "regionId": 302,
+        "regionName": "台灣-Taipei"
+    },
+    {
+        "regionId": 303,
+        "regionName": "台灣-Taoyuan"
+    },
+    {
+        "regionId": 304,
+        "regionName": "台灣-Hsinchu"
+    },
+    {
+        "regionId": 305,
+        "regionName": "台灣-Miaoli"
+    },
+    {
+        "regionId": 306,
+        "regionName": "台灣-Taichung"
+    },
+    {
+        "regionId": 307,
+        "regionName": "台灣-Changhua"
+    },
+    {
+        "regionId": 309,
+        "regionName": "台灣-Yunlin"
+    },
+    {
+        "regionId": 310,
+        "regionName": "台灣-Chiayi"
+    },
+    {
+        "regionId": 311,
+        "regionName": "台灣-Tainan"
+    },
+    {
+        "regionId": 312,
+        "regionName": "台灣-Kaohsiung"
+    },
+    {
+        "regionId": 313,
+        "regionName": "台灣-Pingtung"
+    },
+    {
+        "regionId": 314,
+        "regionName": "台灣-Taitung"
+    },
+    {
+        "regionId": 315,
+        "regionName": "台灣-Hualien"
+    },
+    {
+        "regionId": 316,
+        "regionName": "台灣-Yilan"
+    },
+    {
+        "regionId": 401,
+        "regionName": "韓國-Seoul"
+    },
+    {
+        "regionId": 402,
+        "regionName": "韓國-Busan"
+    },
+    {
+        "regionId": 403,
+        "regionName": "韓國-Daegu"
+    },
+    {
+        "regionId": 404,
+        "regionName": "韓國-Daejeon"
+    },
+    {
+        "regionId": 405,
+        "regionName": "韓國-Gwangju"
+    },
+    {
+        "regionId": 406,
+        "regionName": "韓國-Incheon"
+    },
+    {
+        "regionId": 411,
+        "regionName": "韓國-Gyeonggi-do"
+    },
+    {
+        "regionId": 412,
+        "regionName": "韓國-Gyeongsangbuk-do"
+    },
+    {
+        "regionId": 413,
+        "regionName": "韓國-Gyeongsangnam-do"
+    },
+    {
+        "regionId": 534,
+        "regionName": "CHN-Aomen"
+    },
+    {
+        "regionId": 601,
+        "regionName": "馬來西亞-Johor"
+    },
+    {
+        "regionId": 602,
+        "regionName": "馬來西亞-Kedah"
+    },
+    {
+        "regionId": 605,
+        "regionName": "馬來西亞-Negeri+Sembilan"
+    },
+    {
+        "regionId": 606,
+        "regionName": "馬來西亞-Pahang"
+    },
+    {
+        "regionId": 607,
+        "regionName": "馬來西亞-Pulau+Pinang"
+    },
+    {
+        "regionId": 608,
+        "regionName": "馬來西亞-Perak"
+    },
+    {
+        "regionId": 610,
+        "regionName": "馬來西亞-Selangor"
+    },
+    {
+        "regionId": 612,
+        "regionName": "馬來西亞-Sabah"
+    },
+    {
+        "regionId": 613,
+        "regionName": "馬來西亞-Sarawak"
+    },
+    {
+        "regionId": 614,
+        "regionName": "馬來西亞-Kuala+Lumpur"
+    },
+    {
+        "regionId": 701,
+        "regionName": "印尼-Jakarta+Raya"
+    },
+    {
+        "regionId": 702,
+        "regionName": "印尼-Banten"
+    },
+    {
+        "regionId": 703,
+        "regionName": "印尼-Jawa+Barat"
+    },
+    {
+        "regionId": 705,
+        "regionName": "印尼-Jawa+Timur"
+    },
+    {
+        "regionId": 708,
+        "regionName": "印尼-Kalimantan+Selatan"
+    },
+    {
+        "regionId": 713,
+        "regionName": "印尼-Bali"
+    },
+    {
+        "regionId": 727,
+        "regionName": "印尼-Jambi"
+    },
+    {
+        "regionId": 731,
+        "regionName": "印尼-Sumatera+Barat"
+    },
+    {
+        "regionId": 733,
+        "regionName": "印尼-Sumatera+Utara"
+    },
+    {
+        "regionId": 801,
+        "regionName": "菲律賓-Metropolitan+Manila"
+    },
+    {
+        "regionId": 802,
+        "regionName": "菲律賓-Cordillera+Administrative"
+    },
+    {
+        "regionId": 805,
+        "regionName": "菲律賓-Central+Luzon"
+    },
+    {
+        "regionId": 806,
+        "regionName": "菲律賓-CALABARZON"
+    },
+    {
+        "regionId": 810,
+        "regionName": "菲律賓-Central+Visayas"
+    },
+    {
+        "regionId": 901,
+        "regionName": "泰國-Bangkok"
+    },
+    {
+        "regionId": 902,
+        "regionName": "泰國-Samut+Prakan"
+    },
+    {
+        "regionId": 904,
+        "regionName": "泰國-Pathum+Thani"
+    },
+    {
+        "regionId": 938,
+        "regionName": "泰國-Chiang+Mai"
+    },
+    {
+        "regionId": 1115,
+        "regionName": "越南-Nghe+An"
+    },
+    {
+        "regionId": 1147,
+        "regionName": "越南-Binh+Duong"
+    },
+    {
+        "regionId": 1160,
+        "regionName": "越南-Can+Tho"
+    },
+    {
+        "regionId": 1162,
+        "regionName": "越南-Ha+Noi"
+    },
+    {
+        "regionId": 1163,
+        "regionName": "越南-Hai+Phong"
+    },
+    {
+        "regionId": 1164,
+        "regionName": "越南-Ho+Chi+Minh"
+    },
+    {
+        "regionId": 1201,
+        "regionName": "澳洲-New+South+Wales"
+    },
+    {
+        "regionId": 1202,
+        "regionName": "澳洲-Queensland"
+    },
+    {
+        "regionId": 1205,
+        "regionName": "澳洲-Victoria"
+    },
+    {
+        "regionId": 1206,
+        "regionName": "澳洲-Western+Australia"
+    },
+    {
+        "regionId": 1207,
+        "regionName": "澳洲-Australian+Capital+Territory"
+    },
+    {
+        "regionId": 1304,
+        "regionName": "緬甸-Mandalay"
+    },
+    {
+        "regionId": 1306,
+        "regionName": "緬甸-Yangon"
+    },
+    {
+        "regionId": 1314,
+        "regionName": "緬甸-Shan"
+    },
+    {
+        "regionId": 1401,
+        "regionName": "紐西蘭-Auckland"
+    }
+]

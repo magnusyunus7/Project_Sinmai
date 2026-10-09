@@ -1,17 +1,6 @@
-"""List and download SDGA option files.
-
-This mirrors Project_Sinmai/Feed.cs:
-  - POST a zlib-compressed, base64-encoded request.
-  - Decode the base64-encoded, zlib-compressed response.
-  - Fetch the returned manifest and print its INSTALL entries.
-
-Listing does not download option payloads. When requested, downloading uses
-the executable's ranged-download and resumable fallback behavior.
-"""
+"""List and download SDGA option files."""
 
 from __future__ import annotations
-
-import argparse
 import base64
 from concurrent.futures import ThreadPoolExecutor
 import re
@@ -31,15 +20,14 @@ INSTRUCTION_URL = "http://naominet.jp/sys/servlet/DownloadOrder"
 INSTRUCTION_USER_AGENT = "ALL.Net"
 GAME_ID = "SDGA"
 TITLE_VERSION = "1.65"
-CLIENT_ID = "A63E01E0264"
+CLIENT_ID = "A63E01E0048"
 DOWNLOAD_USER_AGENT = CLIENT_ID
+DOWNLOAD_DIR = Path("downloads")
 SEGMENT_SIZE = 2 * 1024 * 1024
 MAX_SEGMENTS = 4
 MAX_RETRIES = 3
 PROGRESS_WIDTH = 30
 REQUEST_TIMEOUT = (10, 2)
-
-
 @dataclass(frozen=True)
 class OptionEntry:
     name: str
@@ -81,6 +69,7 @@ class DownloadProgress:
 
     def finish(self) -> None:
         self.update(0, force=True)
+        sys.stdout.write("\r" + (" " * 140) + "\r")
         sys.stdout.write("\n")
         sys.stdout.flush()
 
@@ -377,6 +366,9 @@ def download_entries(
     for index in indexes:
         entry = entries[index]
         destination = download_dir / entry.name
+        if destination.exists():
+            print(f"Already downloaded {entry.name} -> {destination}")
+            continue
         print(f"Downloading {entry.name} -> {destination}")
         download_file(session, entry.url, destination)
         print(f"Downloaded {entry.name}")
@@ -443,33 +435,6 @@ def interactive_download(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="List option files advertised by the SDGA instruction service."
-    )
-    parser.add_argument(
-        "--show-urls",
-        action="store_true",
-        help="print numbered option URLs and open the interactive download menu",
-    )
-    parser.add_argument(
-        "--download-all",
-        action="store_true",
-        help="download every listed option into --download-dir",
-    )
-    parser.add_argument(
-        "--download",
-        action="append",
-        metavar="NAME",
-        help="download one listed option by filename; may be repeated",
-    )
-    parser.add_argument(
-        "--download-dir",
-        type=Path,
-        default=Path("downloads"),
-        help="directory for downloaded options (default: downloads)",
-    )
-    args = parser.parse_args()
-
     try:
         with requests.Session() as session:
             instruction = fetch_instruction(session)
@@ -486,29 +451,11 @@ def main() -> int:
                 if not entries:
                     print("  No INSTALL entries found.")
                     continue
-                if not args.show_urls:
-                    for entry in entries:
-                        kind = "latest" if entry.latest else "optional"
-                        print(f"  [{kind}] {entry.name}")
-            if args.show_urls:
-                print("\nAvailable options:")
-                for index, entry in enumerate(all_entries, start=1):
-                    kind = "latest" if entry.latest else "optional"
-                    print(f"  {index}. [{kind}] {entry.name} - {entry.url}")
-                interactive_download(session, all_entries, args.download_dir)
-            requested = set(args.download or [])
-            if args.download_all:
-                requested.update(entry.name for entry in all_entries)
-            if requested:
-                by_name = {entry.name: entry for entry in all_entries}
-                missing = sorted(requested - by_name.keys())
-                if missing:
-                    raise RuntimeError(f"Unknown option name(s): {', '.join(missing)}")
-                indexes = sorted(
-                    all_entries.index(by_name[name])
-                    for name in requested
-                )
-                download_entries(session, all_entries, indexes, args.download_dir)
+            print("\nAvailable options:")
+            for index, entry in enumerate(all_entries, start=1):
+                kind = "latest" if entry.latest else "optional"
+                print(f"  {index}. [{kind}] {entry.name}")
+            interactive_download(session, all_entries, DOWNLOAD_DIR)
     except DownloadCancelled:
         print("\nDownload cancelled.", file=sys.stderr)
         return 130

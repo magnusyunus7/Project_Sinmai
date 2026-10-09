@@ -3,6 +3,7 @@
 from __future__ import annotations
 import base64
 from concurrent.futures import ThreadPoolExecutor
+import os
 import re
 import sys
 import threading
@@ -16,11 +17,44 @@ from urllib.parse import parse_qs, urlsplit, urlunsplit
 import requests
 
 
-INSTRUCTION_URL = "http://naominet.jp/sys/servlet/DownloadOrder"
-INSTRUCTION_USER_AGENT = "ALL.Net"
-GAME_ID = "SDGA"
-TITLE_VERSION = "1.65"
-CLIENT_ID = "A63E01E0048"
+def _load_env_file(path: Path) -> dict[str, str]:
+    values: dict[str, str] = {}
+    if not path.exists():
+        return values
+    for line_number, raw_line in enumerate(
+        path.read_text(encoding="utf-8").splitlines(), start=1
+    ):
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("export "):
+            line = line[7:].lstrip()
+        name, separator, value = line.partition("=")
+        name = name.strip()
+        if not separator or not name or not name.replace("_", "").isalnum():
+            raise ValueError(f"Invalid environment setting on line {line_number}: {raw_line}")
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+            value = value[1:-1]
+        values[name] = value
+    return values
+
+
+def _required_setting(name: str, env_values: dict[str, str]) -> str:
+    value = os.environ.get(name, env_values.get(name, "")).strip()
+    if not value:
+        raise RuntimeError(
+            f"Missing required setting {name}. Add it to the project .env file."
+        )
+    return value
+
+
+_ENV_VALUES = _load_env_file(Path(__file__).resolve().parent.parent / ".env")
+INSTRUCTION_URL = _required_setting("INSTRUCTION_URL", _ENV_VALUES)
+INSTRUCTION_USER_AGENT = _required_setting("INSTRUCTION_USER_AGENT", _ENV_VALUES)
+GAME_ID = _required_setting("GAME_ID", _ENV_VALUES)
+TITLE_VERSION = _required_setting("TITLE_VERSION", _ENV_VALUES)
+CLIENT_ID = _required_setting("CLIENT_ID", _ENV_VALUES)
 DOWNLOAD_USER_AGENT = CLIENT_ID
 DOWNLOAD_DIR = Path("downloads")
 SEGMENT_SIZE = 2 * 1024 * 1024
